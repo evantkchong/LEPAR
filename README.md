@@ -17,6 +17,29 @@ However, one caveat of DeepMAR is that if we want to add additional classes to t
 
 In this work, we use an [adapted Triplet Loss for multi-label classification](https://github.com/abarthakur/multilabel-deep-metric) and apply it to the Pedestrian Attribute Recognition task. As in the standard Triplet Loss, the network embeds features of the same class while maximizing the distance between embeddings of different classes, but this version works for multi-label classification.
 
+## Multi-Label Triplet Loss
+The Triplet Loss implemnentation is borrowed from https://github.com/omoindrot/tensorflow-triplet-loss/blob/master/model/triplet_loss.py while applying ideas from https://github.com/abarthakur/multilabel-deep-metric/blob/master/src/utils.py.
+
+The main change in the Multi-Label Triplet Loss is as follows:
+When using multi-hot encoded labels, labels can be entirely correct, somewhat correct, or totally wrong.
+In order to determine whether a triplet is positive or negative, we consider the number of matches in between multi-hot encoded labels which can be given by the dot product between two labels (we transpose one of them so that we get a scalar output).
+
+In the original function, A triplet `(i, j, k)` is valid if:
+* `i`, `j`, `k` are distinct
+* `labels[i] == labels[j]` and `labels[i] != labels[k]`
+
+To accomodate our new definition of positive and negative triplets, we add on the following constraints
+* `distance(a, p) + margin > distance(a, n)` where `distance(x, y)` indicates the distance between embeddings for `x` and `y`
+* `num_matches(a, p) < num_matches(a, n)` where `num_matches(x, y)` indicates the number of matching classes between the labels for `x` and `y`
+
+## Running this repo
+You are advised to use this repository in conjuction with a virtualenv with the project
+requirements installed.
+
+Prior to training the model, you may download the PETA dataset using the `_download_peta_dataset.sh` script.
+
+After that, run `python3 train_lepar.py` to train the LEPAR model.
+
 ## Requirements
 Developed with Python 3.9.5 on [Ubuntu(Windows 10 WSL2)](https://ubuntu.com/blog/ubuntu-on-wsl-2-is-generally-available) with the following package versions:
 ```

@@ -13,6 +13,9 @@ def _map_fn(x, y):
 
 
 if __name__ == "__main__":
+    if not os.path.exists("out"):
+        os.makedirs("out")
+
     # Define dataset and apply preprocessing steps
     batch_size = 64
     dataset_parser = PETAGenerator()
@@ -28,11 +31,12 @@ if __name__ == "__main__":
     model.compile(
         optimizer=tf.keras.optimizers.Adam(), loss=MultiLabelTripletSemiHard()
     )
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(
+        log_dir="out/lepar", histogram_freq=1
+    )
 
     # Fit model on dataset
-    model.fit(dataset, epochs=2)
+    model.fit(dataset, epochs=60, callbacks=[tensorboard_callback])
 
     # Save model when done training
-    if not os.path.exists("out"):
-        os.makedirs("out")
     model.save_weights("out/lepar")

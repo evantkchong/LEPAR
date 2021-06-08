@@ -13,6 +13,9 @@ def _map_fn(x, y):
 
 
 if __name__ == "__main__":
+    if not os.path.exists('out'):
+        os.makedirs('out')
+
     # Define dataset and apply preprocessing steps
     dataset_parser = PETAGenerator()
     dataset = tf.data.Dataset.from_generator(
@@ -29,11 +32,12 @@ if __name__ == "__main__":
         loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
         metrics=tf.keras.metrics.BinaryCrossentropy(from_logits=True),
     )
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(
+        log_dir="out/deepmar", histogram_freq=1
+    )
 
     # Fit model on dataset
-    model.fit(dataset, epochs=10)
+    model.fit(dataset, epochs=100, callbacks=[tensorboard_callback])
 
     # Save model when done training
-    if not os.path.exists('out'):
-        os.makedirs('out')
     model.save_weights('out/deepmar')
