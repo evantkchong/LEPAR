@@ -2,10 +2,13 @@ import tensorflow as tf
 
 
 class DeepMAR(tf.keras.Model):
-    def __init__(self, num_classes, dropout=0.0):
+    def __init__(self, num_classes, input_shape=None, dropout=0.0):
         super(DeepMAR, self).__init__()
         self.feature_extractor = tf.keras.applications.ResNet50(
-            include_top=False, weights="imagenet", pooling="avg"
+            include_top=False,
+            weights="imagenet",
+            pooling="avg",
+            input_shape=input_shape,
         )
         if dropout > 0.0:
             self.dropout = tf.keras.layers.Dropout(rate=dropout)

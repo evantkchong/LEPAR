@@ -1,10 +1,10 @@
-import argparse
+import os
+import os
 
 import tensorflow as tf
 
 from lepar.datasets import PETAGenerator
 from lepar.models import DeepMAR
-from lepar.loss import MultiLabelTripletSemiHard
 
 
 def _map_fn(x, y):
@@ -32,3 +32,8 @@ if __name__ == "__main__":
 
     # Fit model on dataset
     model.fit(dataset, epochs=10)
+
+    # Save model when done training
+    if not os.path.exists('out'):
+        os.makedirs('out')
+    model.save_weights('out/deepmar')

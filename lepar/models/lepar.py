@@ -8,10 +8,13 @@ class LEPAR(tf.keras.Model):
     generate embeddings with L2 Normalization applied.
     """
 
-    def __init__(self, output_size, dropout=0.5):
+    def __init__(self, output_size, input_shape=None, dropout=0.5):
         super(LEPAR, self).__init__()
         self.feature_extractor = tf.keras.applications.ResNet50(
-            include_top=False, weights="imagenet", pooling="avg"
+            include_top=False,
+            weights="imagenet",
+            pooling="avg",
+            input_shape=input_shape,
         )
         self.flatten = tf.keras.layers.Flatten()
         if dropout > 0.0:
