@@ -131,6 +131,8 @@ class MultiLabelTripletSemiHard(tf.keras.losses.Loss):
         Returns:
 
         """
+        # TODO: Implement this more efficiently as described in
+        # https://omoindrot.github.io/triplet-loss#batch-all-strategy
         factors = tf.zeros(y_true.shape[1]) + 1.0
         anchors, positives, negatives = get_triplets(
             y_pred, y_true, self.max_negatives_per_pos, self.max_num_triplets, factors
