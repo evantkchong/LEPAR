@@ -3,7 +3,8 @@ import tensorflow as tf
 
 class DeepMAR(tf.keras.Model):
     def __init__(self, num_classes, dropout=0.0):
-        self.feature_extractor = tf.keras.applications.resnet50(
+        super(DeepMAR, self).__init__()
+        self.feature_extractor = tf.keras.applications.ResNet50(
             include_top=False, weights="imagenet", pooling="avg"
         )
         if dropout > 0.0:

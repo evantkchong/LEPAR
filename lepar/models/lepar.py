@@ -9,9 +9,11 @@ class LEPAR(tf.keras.Model):
     """
 
     def __init__(self, output_size, dropout=0.5):
-        self.feature_extractor = tf.keras.applications.resnet50(
+        super(LEPAR, self).__init__()
+        self.feature_extractor = tf.keras.applications.ResNet50(
             include_top=False, weights="imagenet", pooling="avg"
         )
+        self.flatten = tf.keras.layers.Flatten()
         if dropout > 0.0:
             self.dropout = tf.keras.layers.Dropout(rate=dropout)
         else:
@@ -20,6 +22,7 @@ class LEPAR(tf.keras.Model):
 
     def call(self, inputs, training=False):
         x = self.feature_extractor(inputs, training=training)
+        x = self.flatten(x)
         if self.dropout and training:
             x = self.dropout(x, training=training)
         x = self.dense(x, training=training)

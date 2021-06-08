@@ -64,16 +64,14 @@ def get_triplets(
     y_batch,
     max_negatives_per_pos,
     max_trips_per_anchor,
-    factors,
-    debug=False,
+    factors
 ):
     trips_list = select_triplets(
         embeddings,
         y_batch,
         max_negatives_per_pos,
         max_trips_per_anchor,
-        factors,
-        debug,
+        factors
     )
     if len(trips_list) == 0:
         return None
@@ -134,6 +132,8 @@ class MultiLabelTripletSemiHard(tf.keras.losses.Loss):
         # TODO: Implement this more efficiently as described in
         # https://omoindrot.github.io/triplet-loss#batch-all-strategy
         factors = tf.zeros(y_true.shape[1]) + 1.0
+        print(y_pred.shape)
+        print(tf.shape(y_pred))
         anchors, positives, negatives = get_triplets(
             y_pred, y_true, self.max_negatives_per_pos, self.max_num_triplets, factors
         )

@@ -30,8 +30,13 @@ class PETAGenerator:
         self.partition_type = partition_type
         self.img_size = img_size
         self.attribute_map = None
+        self.num_labels = 0
         self.label_weights = None
         self.labels, self.file_indexs = self._read_mat()
+        self.output_signature = (
+            tf.TensorSpec(shape=[self.img_size, self.img_size, 3], dtype=tf.float32),
+            tf.TensorSpec(shape=[35], dtype=tf.int32)
+        )
 
     def _read_mat(self):
         data = loadmat(os.path.join(self.dataset_dir, "PETA.mat"))
@@ -45,8 +50,9 @@ class PETAGenerator:
             data["peta"][0][0][1][idx, 0][0] for idx in attribute_idx_list
         ]
         mat_annotations = np.array(data["peta"][0][0][0])
+        self.num_labels = len(mat_annotations)
         # Annotations
-        for idx in range(len(mat_annotations)):
+        for idx in range(self.num_labels):
             multi_hot_label_list.append(
                 mat_annotations[idx, 4:][attribute_idx_list].tolist()
             )
@@ -84,7 +90,7 @@ class PETAGenerator:
         img = tf.io.decode_image(img, channels=3)
         if self.img_size is not None:
             img = tf.image.resize(img, (self.img_size, self.img_size))
-        img = tf.cast(img, tf.uint8)
+        img = tf.cast(img, tf.float32)
         return img.numpy()
 
     def parse(self):
@@ -94,7 +100,6 @@ class PETAGenerator:
             filepath = os.path.join(
                 self.dataset_dir, "images", "{0:0=5d}.png".format(index)
             )
-            print(filepath)
             image = self._read_image(filepath)
             yield image, label
 
@@ -102,4 +107,4 @@ class PETAGenerator:
 if __name__ == "__main__":
     parser = PETAGenerator()
     for img, label in parser.parse():
-        print(img, label)
+        print(img.shape, len(label))
