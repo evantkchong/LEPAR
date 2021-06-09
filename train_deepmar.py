@@ -33,7 +33,7 @@ if __name__ == "__main__":
         metrics=tf.keras.metrics.BinaryCrossentropy(from_logits=True),
     )
     tensorboard_callback = tf.keras.callbacks.TensorBoard(
-        log_dir="out/deepmar", histogram_freq=1
+        log_dir="out/deepmar/logs", histogram_freq=1
     )
 
     # Fit model on dataset
