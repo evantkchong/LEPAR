@@ -29,10 +29,11 @@ if __name__ == "__main__":
     # Define model
     model = LEPAR(256)
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(), loss=MultiLabelTripletSemiHard()
+        optimizer=tf.keras.optimizers.Adam(),
+        loss=MultiLabelTripletSemiHard(),
     )
     tensorboard_callback = tf.keras.callbacks.TensorBoard(
-        log_dir="out/lepar", histogram_freq=1
+        log_dir="out/lepar/logs", histogram_freq=1
     )
 
     # Fit model on dataset

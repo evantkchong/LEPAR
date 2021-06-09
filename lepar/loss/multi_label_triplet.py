@@ -96,6 +96,7 @@ def _get_multi_label_triplet_mask(triplet_loss, labels):
     mask = tf.logical_and(distinct_indices, ij_less_than_ik)
     return mask
 
+@tf.function
 def batch_all_triplet_loss(labels, embeddings, margin, squared=False):
     """This function is obtained from
     https://omoindrot.github.io/triplet-loss#batch-all-strategy

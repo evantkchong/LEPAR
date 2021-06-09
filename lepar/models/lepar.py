@@ -8,7 +8,7 @@ class LEPAR(tf.keras.Model):
     generate embeddings with L2 Normalization applied.
     """
 
-    def __init__(self, output_size, input_shape=None, dropout=0.5):
+    def __init__(self, output_size, input_shape=None, dropout=0.3):
         super(LEPAR, self).__init__()
         self.feature_extractor = tf.keras.applications.ResNet50(
             include_top=False,
@@ -16,11 +16,11 @@ class LEPAR(tf.keras.Model):
             pooling="avg",
             input_shape=input_shape,
         )
-        self.flatten = tf.keras.layers.Flatten()
         if dropout > 0.0:
             self.dropout = tf.keras.layers.Dropout(rate=dropout)
         else:
             self.dropout = None
+        self.flatten = tf.keras.layers.Flatten()
         self.dense = tf.keras.layers.Dense(output_size, activation=None)
 
     def call(self, inputs, training=False):
